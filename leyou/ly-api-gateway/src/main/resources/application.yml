@@ -18,6 +18,8 @@ zuul:
   routes:
     item-service: /item/**
     search-service: /search/**
+    user-service: /user/**
+    sms-service: /sms/**
   host:
     socket-timeout-millis: 60000
     connect-timeout-millis: 60000

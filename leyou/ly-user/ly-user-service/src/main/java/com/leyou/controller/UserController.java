@@ -2,14 +2,30 @@ package com.leyou.controller;
 
 import com.leyou.pojo.User;
 import com.leyou.service.UserService;
+import com.leyou.utils.CodeUtils;
+import com.mysql.cj.util.TimeUtil;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      *实现用户数据的校验，主要包括对：手机号、用户名的唯一性校验。
@@ -30,8 +46,15 @@ public class UserController {
     @PostMapping("/code")
     public void code(@RequestParam("phone") String phone){
             //1.生成6为随机验证码
+        String code = CodeUtils.messageCode(6);
+        //2.使用rabbitMQ发送短信phone code
+        Map<String,String> map = new HashMap<>();
+        map.put("phone",phone);
+        map.put("code",code);
+        amqpTemplate.convertAndSend("sms.changes","sms.send",map);
 
-            //2.调用短信服务发送短信验证码 phone code
+        //3.发送短信后存放redis，放验证码
+        stringRedisTemplate.opsForValue().set("lysms_"+phone,code,5, TimeUnit.MINUTES);
     }
 
     /**
@@ -41,7 +64,7 @@ public class UserController {
      * @param code
      */
     @PostMapping("/register")
-    public void register(User user,String code){
+    public void register(@Valid User user, String code){
 
     }
 
