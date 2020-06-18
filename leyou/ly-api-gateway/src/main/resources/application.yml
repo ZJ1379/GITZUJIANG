@@ -20,6 +20,7 @@ zuul:
     search-service: /search/**
     user-service: /user/**
     sms-service: /sms/**
+    auth-service: /auth/** # 授权中心微服务
   host:
     socket-timeout-millis: 60000
     connect-timeout-millis: 60000
