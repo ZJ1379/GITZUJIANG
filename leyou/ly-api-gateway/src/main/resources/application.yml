@@ -24,6 +24,8 @@ zuul:
   host:
     socket-timeout-millis: 60000
     connect-timeout-millis: 60000
+  add-host-header: true
+  sensitive-headers:
 ribbon:
   ConnectTimeout: 3000 # 连接超时时间(ms)
   ReadTimeout: 2000 # 通信超时时间(ms)

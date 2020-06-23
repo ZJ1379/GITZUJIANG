@@ -95,7 +95,7 @@ public class UserController {
      * @param password
      * @return
      */
-    @PostMapping("login")
+/*    @PostMapping("login")
     public Boolean login(@RequestParam("username") String username,@RequestParam("password") String password){
         Boolean result=false;
         User user=userService.findUser(username);
@@ -107,7 +107,7 @@ public class UserController {
             }
         }
         return result;
-    }
+    }*/
 
 
 
